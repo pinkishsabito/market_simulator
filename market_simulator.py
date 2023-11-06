@@ -1,4 +1,3 @@
-from datetime import datetime, timedelta
 import random
 
 from db_repositories import SimpleOrderBook
@@ -17,8 +16,8 @@ class MarketSimulator:
         order_type = random.choice([OrderType.BUY, OrderType.SELL])
         quantity = random.randint(1, 100)
         price = round(random.uniform(1.0, 100.0), 2)
-        timestamp = datetime.now() + timedelta(seconds=random.randint(1, 60))
-        return Order(order_id, order_type, quantity, price, timestamp)
+        # timestamp = datetime.now() + timedelta(seconds=random.randint(1, 60))
+        return Order(order_id, order_type, quantity, price)
 
     def simulate_market(self, num_orders, match_interval) -> None:
         for order_id in range(1, num_orders + 1):

@@ -14,12 +14,12 @@ class OrderStatus(Enum):
 
 
 class Order:
-    def __init__(self, order_id: int, order_type: OrderType, quantity: int, price: float, timestamp: datetime) -> None:
+    def __init__(self, order_id: int, order_type: OrderType, quantity: int, price: float) -> None:
         self.order_id = order_id
         self.order_type = order_type
         self.quantity = quantity
         self.price = price
-        self.timestamp = timestamp
+        self.timestamp = datetime.now()
         self.status = OrderStatus.OPEN
 
     def __str__(self) -> str:
