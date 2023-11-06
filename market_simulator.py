@@ -1,34 +1,31 @@
 import random
+import time
+from order import Order, OrderType
+from order_book import OrderBook
 
-from db_repositories import SimpleOrderBook
-from entities import OrderType, Order
 
-
-class MarketSimulator:
-    def __init__(self) -> None:
-        self.order_book = SimpleOrderBook()
-
-    def start(self, num_orders: int, match_interval: int) -> None:
-        self.simulate_market(num_orders, match_interval)
-
-    @staticmethod
-    def generate_random_order(order_id: int) -> Order:
+def simulate_market(order_books: OrderBook, num_orders: int, max_quantity: int, max_price: float):
+    for _ in range(num_orders):
+        order_id = random.randint(1, 1000)
+        timestamp = time.time()
         order_type = random.choice([OrderType.BUY, OrderType.SELL])
-        quantity = random.randint(1, 100)
-        price = round(random.uniform(1.0, 100.0), 2)
-        # timestamp = datetime.now() + timedelta(seconds=random.randint(1, 60))
-        return Order(order_id, order_type, quantity, price)
+        quantity = random.randint(1, max_quantity)
+        price = round(random.uniform(1.0, max_price), 2)
 
-    def simulate_market(self, num_orders, match_interval) -> None:
-        for order_id in range(1, num_orders + 1):
-            order = self.generate_random_order(order_id)
-            self.order_book.add_order(order)
-            if order.order_type == OrderType.BUY:
-                print(f"New Buy Order: {order}")
+        order = Order(order_id, timestamp, order_type, quantity, price)
+        order_books.add_order(order)
+
+        if random.random() < 0.2:
+            if random.random() < 0.5:
+                new_quantity = random.randint(1, max_quantity)
+                new_price = round(random.uniform(1.0, max_price), 2)
+                order_books.modify_order(order_id, new_quantity, new_price)
             else:
-                print(f"New Sell Order: {order}")
+                order_books.remove_order(order_id)
 
-            if order_id % match_interval == 0:
-                matched_orders = self.order_book.match_orders()
-                for buy_order, sell_order, quantity in matched_orders:
-                    print(f"Trade: {quantity} units at price {sell_order.price}")
+        order_books.match_orders()
+
+
+if __name__ == "__main__":
+    order_book = OrderBook()
+    simulate_market(order_book, num_orders=50, max_quantity=10, max_price=100.0)
