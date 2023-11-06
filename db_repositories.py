@@ -19,7 +19,7 @@ class SimpleOrderBook(OrderBook):
         self.buy_orders = [order for order in self.buy_orders if order.order_id != order_id]
         self.sell_orders = [order for order in self.sell_orders if order.order_id != order_id]
 
-    def match_orders(self):
+    def match_orders(self) -> list[tuple]:
         self.buy_orders.sort(key=lambda x: x.price, reverse=True)
         self.sell_orders.sort(key=lambda x: x.price)
         matched = []
